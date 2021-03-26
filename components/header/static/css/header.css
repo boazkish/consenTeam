@@ -1,0 +1,56 @@
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+    -webkit-box-shadow: 0 4px 6px -2px #dddddd;
+    -moz-box-shadow: 0 4px 6px -2px #dddddd;
+    box-shadow: 0 2px 2px -2px #dddddd;
+
+}
+
+nav{
+    display: flex;
+    margin-bottom: 0;
+}
+
+#logo {
+    width: 15vw;
+    overflow: auto;
+}
+
+#main_logo{
+    padding: 1%;
+}
+
+.icon-bar {
+    width: 100%; /* Full-width */
+    overflow: auto; /* Overflow due to float */
+    height: 100%;
+    padding: 1%;
+}
+
+.icon-bar a {
+    float: right; /* Float links side by side */
+    text-align: center; /* Center-align text */
+    width: 10%; /* Equal width (5 icons with 20% width each = 100%) */
+    height: 100%;
+    color: black; /* White text color */
+    font-size: 2vw; /* Increased font size */
+}
+
+.icon-bar a:hover >.fa{
+    transform: scale(1.3);
+}
+
+#logo:hover{
+    transform: scale(1.1);
+}
+
+.icon-bar a>.fa-home{
+    transform: scale(1.2);
+}
+
+.icon-bar a:hover>.fa-home{
+    transform: scale(1.4);
+}

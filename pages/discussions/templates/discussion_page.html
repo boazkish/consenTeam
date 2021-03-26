@@ -1,0 +1,174 @@
+<link rel="stylesheet" href="{{ url_for('discussions.static', filename='css/discussion_page.css') }}"/>
+<script src="{{ url_for('discussions.static', filename='js/discussion_page.js') }}"></script>
+
+{% extends 'base.html' %}
+
+{% set page_head_title = 'discussion_page' %}
+
+{% block page_body_main %}
+    <main>
+        <div class="discussions_header">
+            <i id="profile_picture" class="fa fa-user-circle-o fa-2x"></i>
+            <h1 id="disc_title2">{{ discussion[0]['title'] }}</h1>
+            <div class="disc_img">
+                {% if session['logged_in'] %}
+                    <a href="/discussions/{{ discussion[0]['discussion_id'] }}/settings"><i class="fa fa-cog fa-2x"></i></a>
+                {% endif %}
+                <a href="/discussions/{{ discussion[0]['discussion_id'] }}"><i class="fa fa-list-ul fa-2x"></i></a>
+                <a href="/discussions/{{ discussion[0]['discussion_id'] }}/info"><i class="fa fa-info-circle fa-2x"></i></a>
+                <a href="/discussions/{{ discussion[0]['discussion_id'] }}/tree"><i class="fa fa-sitemap fa-2x"></i></a>
+            </div>
+        </div>
+
+        {% if main and tree %}
+            <div class="tree">
+                <ul>
+                    {{ html_string }}
+                </ul>
+            </div>
+        {% else %}
+            <div class="list">
+                <form method="post">
+                    <fieldset>
+                        <ul>
+                            {{ html_string }}
+                        </ul>
+                    </fieldset>
+                </form>
+            </div>
+        {% endif %}
+
+
+        {% if not main and not settings %}
+            <div class="contain_details">
+                <div class="disc_details">
+                    <div class="column">
+                        <h3 class="sub-title">Created By</h3>
+                        <h3 class="sub_value">{{ discussion[0]['first_name'] }} {{ discussion[0]['last_name'] }}</h3>
+                        <h3 class="sub-title">Creation Date</h3>
+                        <h3 class="sub_value">{{ discussion[0]['creation_date'] }} </h3>
+                        <h3 class="sub-title">Due Date</h3>
+                        <h3 class="sub_value">{{ discussion[0]['due_date'] }} </h3>
+                    </div>
+                    <div class="column">
+                        <h3 class="sub-title">Status</h3>
+                        <h3 class="sub_value">{{ discussion[0]['status'] }} </h3>
+                        <h3 class="sub-title">Description</h3>
+                        <h3 class="sub_value">{{ discussion[0]['description'] }}  </h3>
+                    </div>
+                </div>
+            </div>
+            <br><br><br><br><br><br><br><br><br>
+
+        {% endif %}
+
+        {% if settings %}
+            <div class="settings_div">
+                {% if session.get('email') == discussion[0]['discussion_owner'] %}
+                    <form method="POST" action="/discussions/{{ discussion[0]['discussion_id'] }}/tree/remove_branches">
+                        <label>Choose TOP %:</label>
+                        <input type="number" name="percentile">
+                        <input id="status_button" type="submit" value="Cut">
+                    </form>
+                    <h2>Current Status: {{ discussion[0]['status'] }}</h2>
+                    <form method="post" action="/change_status">
+                        <label>Change discussion status:</label>
+                        <select name="status">
+                            <option hidden> change discussion status</option>
+                            <option value="Open"> Open</option>
+                            <option value="Voting"> Voting</option>
+                            <option value="Closed"> Closed</option>
+                            <option value="Final Voting"> Final Voting</option>
+                        </select>
+                        <input type="text" id="discussion_id" name="discussion_id" hidden
+                               value="{{ discussion[0]['discussion_id'] }}">
+                        <input id="status_button" type="Submit" value="Change Status"><br><br>
+                        {% if  discussion[0]['status'] == 'Final Voting' %}
+                            <form method="POST" action="/final_decision">
+                                <input id="status_button" type="Submit" value="Get the final decision">
+                            </form><br><br>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            <h2 class="TODO">TODO: CSS</h2>
+            </div>
+        {% endif %}
+
+        {% for c in comments %}
+            <div id="simpleModal{{ c[0] }}" class="modal">
+                <div class="modal-content">
+                    <span class="closeBtn" onclick="closeModal({{ c[0] }})">&times;</span>
+
+                    <div class="upper">
+                        <p class="upper_modal"><br>
+                            {% for i in big_dict[c[0]] %}  {{ i }} >
+                            {% endfor %}</p>
+
+                        <h4>Created by: {{ c[8] }} {{ c[9] }}</h4>
+                        <form class="form-center"
+                              action="/discussions/insert_comments/{{ discussion[0]['discussion_id'] }}/{{ c[0] }}"
+                              method="POST">
+                            <label for="title"></label><br>
+                            <input type="text" id="title" placeholder="Write your comment..." name="title" required>
+                            <br><br>
+                            <input type="Submit" value="Comment" class="btn btn-info btn-lg" id="sign">
+                        </form>
+                        {#                        <a onclick="merge_comment({{ comments[0]['node_id'] }})">Suggest a merge</a>#}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% for c in comments %}
+            <div id="rank_Modal{{ c[0] }}" class="modal">
+                <div class="modal-content">
+                    <div class="upper">
+                        <span class="closeBtn" onclick="close_rank_Modal({{ c[0] }})">&times;</span>
+                        <p class="upper_modal"><br>
+                            {% for i in big_dict[c[0]] %}  {{ i }} >
+                            {% endfor %}</p>
+
+                        <h4>Created by: {{ c[8] }} {{ c[9] }}</h4>
+                        <form class="form-center"
+                              action="/discussions/rank_node/{{ discussion[0]['discussion_id'] }}/{{ c[0] }}"
+                              method="POST">
+                            {% if session['logged_in'] %}
+                                <h4>You have {{ user_score_discussion[0][2] }} available tokens</h4>
+                                <h4>How much coins do you want to give? <input type="number" id="rank" name="rank"
+                                                                               required>
+                                </h4>
+                            {% endif %}
+
+                            <input type="Submit" value="Vote" class="btn btn-info btn-lg" id="sign">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div id="merge_Modal{{ comments[0]['node_id'] }}" class="modal">
+            <div class="modal-content">
+                <div class="upper">
+                    <span class="closeBtn" onclick="close_merge_Modal({{ comments[0]['node_id'] }})">&times;</span><br>
+                    <p class="upper_modal">Merge </p>
+                    <form class="form-center"
+                          action="/discussions/rank_node/{{ discussion[0]['discussion_id'] }}"
+                          method="POST">
+                        {% if session['logged_in'] %}
+                            <h4>You have {{ user[0][6] }} available tokens</h4>
+                        {% endif %}
+
+                        <h4>Merge comment
+                            <select> {% for node in merge_list %}
+                                <option value="{{ node.node_content }}"> {{ node.node_content }}</option>
+                            {% endfor %}</select>
+                        </h4>
+                        <input type="Submit" value="Vote" class="btn btn-info btn-lg" id="sign">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </main>
+{% endblock %}

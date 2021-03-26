@@ -1,0 +1,76 @@
+<link rel="stylesheet" href="{{ url_for('profile.static', filename='css/profile.css') }}"/>
+
+{% extends 'base.html' %}
+
+{% set page_head_title = 'Profile' %}
+
+
+{% block page_body_main %}
+    <main>
+
+        {% if not register and not logged_in %}
+            {# Login Form #}
+            <form class="form-center" action="/profile/login" method="POST">
+                <h2 class="title_form">Sign In</h2>
+                <label for="email"></label>
+                <input type="email" placeholder="Email" class="form-elemental" id="email" name="email"
+                       required>
+                <br>
+                <label for="password"></label>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <br>
+                {% if  is_exist != None %}
+                    <p class="error">The email / password are wrong.</p>
+                {% endif %}
+
+                <input type="Submit" value="Sign in" class="btn" id="sign">
+
+            </form>
+
+            <h3 class="center_text"><a class="center_text" href="profile/registration">Sign Up</a></h3>
+
+        {% endif %}
+
+
+        {# Registration Form #}
+        {% if register and not logged_in %}
+            <form class="form-center" action="/profile/registration" method="POST">
+                <h2 class="title_form">Sign Up</h2>
+                <label for="first_name"></label>
+                <input type="text" placeholder="First Name" id="first_name" name="first_name" required>
+                <label for="last_name"></label>
+                <input type="text" placeholder="Last Name" id="last_name" name="last_name" required>
+                <label for="email"></label>
+                <input type="email" placeholder="Email" id="email" name="email" required>
+                <label for="password"></label>
+                <input type="password" placeholder="Password" id="password" name="password" required>
+                <label for="city"></label>
+                <input type="text" placeholder="City" id="city" name="city">
+                <label for="birth_date"></label>
+                <input type="text" placeholder="Birth Date" id="birth_date" name="birth_date"
+                       onfocus="(this.type='date')" required><br>
+                <label for="terms"><input type="checkbox" id="terms" name="terms" value="agreed" required>I confirm that
+                    I have read, understood and accept</label>
+                <br><br>
+
+                <input type="Submit" value="Register" class="btn" id="sign">
+                <br><br>
+            </form>
+            <br><br>
+        {% endif %}
+        {% if logged_in %}
+            <div class="my_profile">
+                <h1 class="profile_header">My Profile</h1>
+                <h2> Name: {{ user[0].first_name }} {{ user[0].last_name }}</h2>
+                <h2> Email: {{ user[0].email }}</h2><br>
+                {#                Tokens:#}
+                {#                <h2> {{ user[0].user_tokens }}</h2> <br>#}
+                <a href="/profile/logout">Log out</a><br><br>
+                <h2 class="TODO">TODO: Profile picture, My discussions, Saved discussions, Tokens per discussion</h2>
+            </div>
+        {% endif %}
+
+
+    </main>
+
+{% endblock %}

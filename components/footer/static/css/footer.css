@@ -1,0 +1,17 @@
+footer {
+    padding: 0.5%;
+    text-align: center;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    z-index: 0;
+}
+
+#rights {
+    color: #005353;
+    font-weight: bold;
+}
+
+hr {
+    width: 95%;
+}

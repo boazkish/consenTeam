@@ -1,0 +1,74 @@
+<script src="{{ url_for('discussions.static', filename='js/discussions.js') }}"></script>
+
+
+{% extends 'base.html' %}
+{% block page_css %}
+    <link rel="stylesheet" href="{{ url_for('discussions.static', filename='css/discussions1.css') }}"/>
+{% endblock %}
+
+
+{% set page_head_title = 'Discussions' %}
+
+{% block page_body_main %}
+    <main>
+
+        <div class="discussions_header">
+            <h1 id="disc_title">DISCUSSIONS</h1>
+            <div class="disc_img">
+                <a href="settings"><i class="fa fa-filter fa-3x"></i></a>
+                {% if session['logged_in'] %}
+                    <a id="modalBtn" onclick="new_discussion_logged_in()"><i class="fa fa-plus fa-3x"></i></a>
+                {% else %}
+                    <a id="modalBtn" onclick="new_discussion_not_logged_in()"><i class="fa fa-plus fa-3x"></i></a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div id="simpleModal" class="modal">
+            <div class="modal-content">
+                <div class="upper">
+                    <span class="closeBtn" onclick=" closeModal()">&times;</span><br>
+                    <p class="upper_modal">New Discussion</p>
+                    <form class="form-center" action="/discussions/insert" method="POST">
+                        <label for="title">Topic Name:</label><br>
+                        <input type="text" id="title" name="title" required>
+                        <br>
+                        <label for="description">Description:</label><br>
+                        <textarea id="description" name="description" cols="40" rows="5" required></textarea>
+                        <br>
+                        <label for="date">Due Date: </label><br>
+                        <input type="date" id="date" name="date" placeholder="date" required>
+                        <br><br>
+                        <input type="Submit" value="Create" class="btn btn-info btn-lg" id="sign">
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="modal_not_logged_in" class="modal">
+            <div class="modal-content">
+                <div class="upper">
+                    <span class="closeBtn" onclick="closeModal_not_logged_in()">&times;</span><br>
+                    <p class="error_modal">Oops...to create a discussion you must sign in first</p>
+                    <p class="error_modal" ><a href="profile">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="disc_list">
+            {% for d in discussions %}
+                <div class="disc_item">
+                    <a class="disc_item_text" href="/discussions/{{ d.discussion_id }}">{{ d.title }} </a>
+                    {% if d.discussion_id in list %}
+                        <a><i id="disc{{ d.discussion_id }}" class="fa fa-star"
+                              onclick="location.href='/discussions/delete_favorite/{{ d.discussion_id }}'"></i></a>
+                    {% else %}
+                        <a><i id="disc{{ d.discussion_id }}" class="fa fa-star-o"
+                              onclick="location.href='/discussions/insert_favorite/{{ d.discussion_id }}'"></i></a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}

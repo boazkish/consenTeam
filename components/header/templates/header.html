@@ -1,0 +1,19 @@
+
+<link rel="stylesheet" href="{{ url_for('header.static', filename='css/header.css') }}"/>
+
+
+
+<header>
+<!-- Navigation icons at top right -->
+        <nav>
+            <a href="homepage" id="main_logo"><img id="logo" src="{{ url_for('header.static', filename='media/logo.png') }}"></a>
+            <div class="icon-bar">
+                <a href="homepage"><i class="fa fa-home"></i></a>
+                <a href="homepage"><i class="fa fa-bell"></i></a>
+{#                <a href="settings"><i class="fa fa-cog"></i></a>#}
+                <a href="profile"><i class="fa fa-user"></i></a>
+{#                <a href="favorites"><i class="fa fa-star"></i></a>#}
+                <a href="discussions"><i class="fa fa-commenting" ></i></a>
+            </div>
+        </nav>
+</header>

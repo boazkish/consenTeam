@@ -1,0 +1,13 @@
+body{
+    font-family: "Calibri Light";
+    background-color: #f3f3f3;
+    margin: 0px;
+}
+
+*{
+    color:black;
+}
+
+.TODO{
+    color: #df3535;
+}
